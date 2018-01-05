@@ -1,6 +1,7 @@
 var express = require('express');
 var bodyParser = require('body-parser');
 var path = require('path');
+var ejs = require('ejs');
 
 var app = express();
 
@@ -11,6 +12,9 @@ var app = express();
 //
 // app.use(logger);
 
+// View Engine
+app.set('view engine', ejs);
+
 // Body Parser Middleware
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
@@ -19,7 +23,7 @@ app.use(bodyParser.urlencoded({extended: false}));
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.get('/', (req, res) => {
-  res.send('Hello Worl!');
+  res.send('Hello');
 });
 
 app.listen(3000, () => {
