@@ -1,0 +1,23 @@
+{
+  "name": "expressjs-cc",
+  "version": "1.0.0",
+  "description": "Express Crash Course",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jjl014/expressjs-cc.git"
+  },
+  "author": "Jimmy Li",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jjl014/expressjs-cc/issues"
+  },
+  "homepage": "https://github.com/jjl014/expressjs-cc#readme",
+  "dependencies": {
+    "body-parser": "^1.18.2",
+    "express": "^4.16.2"
+  }
+}
