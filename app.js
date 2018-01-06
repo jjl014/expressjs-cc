@@ -1,12 +1,14 @@
-var express = require('express');
-var bodyParser = require('body-parser');
-var path = require('path');
-var ejs = require('ejs');
-var expressValidator = require('express-validator');
+const express = require('express');
+const bodyParser = require('body-parser');
+const path = require('path');
+const ejs = require('ejs');
+const expressValidator = require('express-validator');
+const mongojs = require('mongojs');
+const db = mongojs('expresspractice', ['users']);
 
-var app = express();
+const app = express();
 
-// var logger = (req, res, next) => {
+// const logger = (req, res, next) => {
 //   console.log('Logging...');
 //   next();
 // };
@@ -24,10 +26,16 @@ app.use(bodyParser.urlencoded({extended: false}));
 // Set static path
 app.use(express.static(path.join(__dirname, 'public')));
 
+// Global Vars
+app.use((req, res, next) => {
+  res.locals.errors = null;
+  next();
+});
+
 // Express Validator Middleware
 app.use(expressValidator({
   errorFormatter: function(param, msg, value) {
-    var namespace = param.split('.')
+    const namespace = param.split('.')
     , root        = namespace.shift()
     , formParam   = root;
 
@@ -42,33 +50,36 @@ app.use(expressValidator({
   }
 }));
 
-var users = [
-  {
-    name: "Jimmy",
-    email: "jimmy@test.com",
-    age: 25
-  },
-  {
-    name: "Leia",
-    email: "leia.test.com",
-    age:23
-  }
-];
-
 app.get('/', (req, res) => {
-  res.render('index.ejs', {
-    title: "Hello World",
-    users
+  db.users.find((err, docs) => {
+    res.render('index.ejs', {
+      title: "Users",
+      users: docs
+    });
   });
-  // res.send("hello");
 });
 
 app.post('/users/add', (req, res) => {
-  const newUser = {
-    name: req.body.name,
-    email: req.body.email,
-    age: req.body.age
-  };
+  req.checkBody('name', 'Name is required').notEmpty();
+  req.checkBody('email', 'Email is required').notEmpty();
+  req.checkBody('age', 'Age is required').notEmpty();
+
+  let errors = req.validationErrors();
+
+  if(errors) {
+    res.render('index.ejs', {
+      title: 'Users',
+      users,
+      errors
+    });
+  } else {
+    const newUser = {
+      name: req.body.name,
+      email: req.body.email,
+      age: req.body.age
+    };
+    console.log("Success");
+  }
 });
 
 app.listen(3000, () => {
