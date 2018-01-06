@@ -67,10 +67,12 @@ app.post('/users/add', (req, res) => {
   let errors = req.validationErrors();
 
   if(errors) {
-    res.render('index.ejs', {
-      title: 'Users',
-      users,
-      errors
+    db.users.find((err,docs) => {
+      res.render('index.ejs', {
+        title: 'Users',
+        users: docs,
+        errors
+      });
     });
   } else {
     const newUser = {
@@ -78,7 +80,13 @@ app.post('/users/add', (req, res) => {
       email: req.body.email,
       age: req.body.age
     };
-    console.log("Success");
+    db.users.insert(newUser, (err, result) => {
+      if(err) {
+        console.log(err);
+      } else {
+        res.redirect('/');
+      }
+    });
   }
 });
 
