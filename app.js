@@ -5,7 +5,7 @@ const ejs = require('ejs');
 const expressValidator = require('express-validator');
 const mongojs = require('mongojs');
 const db = mongojs('expresspractice', ['users']);
-
+const ObjectId = mongojs.ObjectId;
 const app = express();
 
 // const logger = (req, res, next) => {
@@ -88,6 +88,17 @@ app.post('/users/add', (req, res) => {
       }
     });
   }
+});
+
+app.delete('/users/delete/:id', (req, res) => {
+  console.log(req.params.id);
+  db.users.remove({_id: ObjectId(req.params.id)}, (err) => {
+    if(err) {
+      console.log(err);
+    } else {
+      res.redirect('/');
+    }
+  });
 });
 
 app.listen(3000, () => {
